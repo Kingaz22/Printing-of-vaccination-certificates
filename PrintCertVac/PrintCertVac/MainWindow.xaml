@@ -1,0 +1,1117 @@
+﻿<dx:ThemedWindow xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"  xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"  
+    x:Class="PrintCertVac.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:local="clr-namespace:PrintCertVac" xmlns:dxr="clr-namespace:DevExpress.Xpf.Ribbon;assembly=DevExpress.Xpf.Ribbon.v21.1" xmlns:dxb="clr-namespace:DevExpress.Xpf.Bars;assembly=DevExpress.Xpf.Core.v21.1" xmlns:lc="clr-namespace:DevExpress.Xpf.LayoutControl;assembly=DevExpress.Xpf.LayoutControl.v21.1" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v21.1" xmlns:model="clr-namespace:PrintCertVac.Model"
+                 Title="Сертификаты о вакцинации против COVID-19" Height="1000" Width="1500" WindowState="Maximized">
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanConverter" />
+        <model:UpperConverter x:Key="myUpperConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <dxb:BarManager CreateStandardLayout="True" ShowScreenTipsInPopupMenus="False">
+            <dxb:BarManager.Bars>
+                <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph" >
+                    <dxb:Bar.DockInfo>
+                        <dxb:BarDockInfo ContainerType="Top" />
+                    </dxb:Bar.DockInfo>
+                    <dxb:BarButtonItem Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=print1}" Content="Печать 2 страницы" Glyph="{dx:DXImage Office2013/Print/Print_16x16.png}" LargeGlyph="{dx:DXImage Office2013/Print/Print_32x32.png}"/>
+                    <dxb:BarButtonItem Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=print}" Content="Печать 1 страницы" Glyph="{dx:DXImage Office2013/Print/Print_16x16.png}" LargeGlyph="{dx:DXImage Office2013/Print/Print_32x32.png}"/>
+                    <dxb:BarButtonItem Command="{Binding SaveClientCommand}" Content="Сохранить сертификат" Glyph="{dx:DXImage Office2013/Save/SaveTo_16x16.png}" LargeGlyph="{dx:DXImage Office2013/Save/SaveTo_32x32.png}"/>
+                    <dxb:BarButtonItem Command="{Binding SaveTemplateCommand}" Content="Сохранить шаблон" Glyph="{dx:DXImage Office2013/Save/SaveAndNew_16x16.png}" LargeGlyph="{dx:DXImage Office2013/Save/SaveAndNew_32x32.png}"/>
+                    <dxb:BarButtonItem Command="{Binding ClearCommand}" Content="Очистить" LargeGlyph="{dx:DXImage Office2013/Actions/Clear_32x32.png}" />
+                    <dxb:BarCheckItem Command="{Binding SettingCommand}" Content="Настройки" LargeGlyph="{dx:DXImage Office2013/Setup/PageSetup_32x32.png}" ToolTip="Отобразить кнопки настройки текста"/>
+                    <dxb:BarButtonItem Command="{Binding AboutCommand}" Content="О программе" LargeGlyph="{dx:DXImage Office2013/Support/Info_32x32.png}" />
+                    
+
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+        </dxb:BarManager>
+
+
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedIndex}">
+            <TabItem Header="Страница 2">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="21cm"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>                    
+
+                        <Image Grid.Column="0" Source="Image/secondpage.png" Width="19.8cm" Height="21cm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0.6cm, 0, 0, 0"/>
+
+                        <Grid Grid.Column="0" Name="print1" Width="19.8cm" Height="21cm"  Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0.6cm, 0, 0, 0">
+
+                            <StackPanel Name="FamilyName" Margin="{Binding Certificate.User.Margin.FamilyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding FamilyName}" FontSize="{Binding Certificate.User.FontSize.FamilyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=FamilyName}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=FamilyName}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=FamilyName}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=FamilyName}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=FamilyName}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=FamilyName}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="NameFull" Margin="{Binding Certificate.User.Margin.Name, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding NameFull}" FontSize="{Binding Certificate.User.FontSize.Name, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameFull}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameFull}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=NameFull}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=NameFull}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameFull}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameFull}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        
+                            <StackPanel Name="Patronymic" Margin="{Binding Certificate.User.Margin.Patronymic, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.User.Patronymic}" FontSize="{Binding Certificate.User.FontSize.Patronymic, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=Patronymic}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=Patronymic}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=Patronymic}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=Patronymic}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=Patronymic}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=Patronymic}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        
+                            <StackPanel Name="DateOfBirth" Margin="{Binding Certificate.User.Margin.DateOfBirth, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.User.DateOfBirth}" FontSize="{Binding Certificate.User.FontSize.DateOfBirth, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=DateOfBirth}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=DateOfBirth}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=DateOfBirth}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=DateOfBirth}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=DateOfBirth}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=DateOfBirth}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        
+                            <StackPanel Name="Passport" Margin="{Binding Certificate.User.Margin.Passport, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.User.Passport}" FontSize="{Binding Certificate.User.FontSize.Passport, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=Passport}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=Passport}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=Passport}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=Passport}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=Passport}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=Passport}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="IdentNumber" Margin="{Binding Certificate.User.Margin.IdentNumber, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.User.IdentNumber}" FontSize="{Binding Certificate.User.FontSize.IdentNumber, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=IdentNumber}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=IdentNumber}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=IdentNumber}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=IdentNumber}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=IdentNumber}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=IdentNumber}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="DateVac" Margin="{Binding Certificate.DateOfVaccination.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.DateOfVaccination.Date}" FontSize="{Binding Certificate.DateOfVaccination.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=DateVac}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=DateVac}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=DateVac}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=DateVac}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=DateVac}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=DateVac}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="NameVacRusEngPart" Margin="{Binding Certificate.Vaccine.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding NameVacRusEngPart}" FontSize="{Binding Certificate.Vaccine.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameVacRusEngPart}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="NameDoctor" Margin="{Binding Certificate.Doctor.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.Doctor.Name}" FontSize="{Binding Certificate.Doctor.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameDoctor}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameDoctor}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=NameDoctor}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=NameDoctor}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameDoctor}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameDoctor}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="DateVac2" Margin="{Binding Certificate.DateOfVaccination2.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.DateOfVaccination2.Date}" FontSize="{Binding Certificate.DateOfVaccination2.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=DateVac2}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=DateVac2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=DateVac2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=DateVac2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=DateVac2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=DateVac2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="NameVacRusEngPart2" Margin="{Binding Certificate.Vaccine2.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding NameVacRusEngPart2}" FontSize="{Binding Certificate.Vaccine2.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameVacRusEngPart2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Name="NameDoctor2" Margin="{Binding Certificate.Doctor2.Margin, Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Certificate.Doctor2.Name}" FontSize="{Binding Certificate.Doctor2.FontSize, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                            Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameDoctor2}" Background="Transparent" Cursor="Hand">
+                                        <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameDoctor2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Up}" CommandParameter="{Binding ElementName=NameDoctor2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                            Command="{Binding Down}" CommandParameter="{Binding ElementName=NameDoctor2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                            Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameDoctor2}" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                            Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameDoctor2}" Cursor="Hand" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="60*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+                                    <dx:SimpleButton Command="{Binding ContentPasteCommand}" Width="195" Height="30" Content="Вставить данные пациента"  Glyph="{dx:DXImage Office2013/Edit/Paste_32x32.png}" Margin="0, 3"/>
+                                    <dx:SimpleButton Command="{Binding ContentPasteVacCommand}" Width="195" Height="30" Content="Вставить данные вакцины"  Glyph="{dx:DXImage Office2013/Edit/Paste_32x32.png}" Margin="0, 3"/>
+                                    <dx:SimpleButton Command="{Binding ChekCertificateCommand}" Width="110" Height="30" Content="Проверить"  Glyph="{dx:DXImage Office2013/Content/CheckBox_32x32.png}" Margin="0, 3"/>
+                                    <dx:SimpleButton Command="{Binding CopyFioCommand}" Width="150" Height="30" Content="Копировать ФИО"  Glyph="{dx:DXImage Office2013/Edit/Copy_32x32.png}" Margin="0, 3"/>
+                                    <materialDesign:PopupBox StaysOpen="True" HorizontalAlignment="Right" ToolTip="Дополнительные настройки" Margin="-12, 0, 0, 0">
+                                        <Grid Width="300" Margin="8,8,8,8">
+                                            <Grid.Resources>
+                                                <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                                                    <Setter Property="Margin" Value="8,8,10,8" />
+                                                </Style>
+                                                <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                                    <Setter Property="materialDesign:HintAssist.IsFloating" Value="True" />
+                                                    <Setter Property="Margin" Value="8,8,8,8" />
+                                                </Style>
+                                            </Grid.Resources>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <CheckBox Margin="5, -5"  IsChecked="{Binding SettingApp.NumberCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="Печатать номер договора" FontFamily="times new roman" FontSize="12pt"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0, 5, 0, 0">
+                                                <CheckBox Margin="5, -5"  IsChecked="{Binding SettingApp.FullNameCharacterCasing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="Фамилия на английском строчными" FontFamily="times new roman" FontSize="12pt"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0, 5, 0, 0">
+                                                <CheckBox Margin="5, -5"  IsChecked="{Binding SettingApp.NameCharacterCasing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="Имя на английском строчными" FontFamily="times new roman" FontSize="12pt"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0, 5, 0, 0">
+                                                <CheckBox Margin="5, -5"  IsChecked="{Binding SettingApp.NumberCharacterCasing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="Номер паспорта строчными" FontFamily="times new roman" FontSize="12pt"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0, 5, 0, 10">
+                                                <CheckBox Margin="5, -5"  IsChecked="{Binding SettingApp.NumberIdCharacterCasing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="Личный номер строчными" FontFamily="times new roman" FontSize="12pt"/>
+                                            </StackPanel>
+                                            <dx:SimpleButton Grid.Row="5" Command="{Binding SaveSettingAppCommand}"  Height="30" Content="Сохранить"  Glyph="{dx:DXImage Office2013/Setup/SavePageSetup_32x32.png}" Margin="0, 3"/>
+                                        </Grid>
+                                    </materialDesign:PopupBox>
+                                </WrapPanel>
+
+                                <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <lc:GroupBox  Header="Номер договора" Margin="3" Width="120" Height="80">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                            <TextBox Margin="-5, -5, 0, 10" Padding="4" FontSize="15pt" 
+                                                     FontFamily="times new roman" Text="{Binding Certificate.ContractNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Cursor="IBeam" Width="85"/>
+                                            <CheckBox Margin="1, -5, 0, 10" ToolTip="Печатать номер договора" IsChecked="{Binding SettingApp.NumberCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+                                    </lc:GroupBox>
+                                    <dxe:ComboBoxEdit Height="30" Width="300" IsTextEditable="False" FontFamily="times new roman" FontSize="13pt" VerticalAlignment="Top" Margin="3"
+                                                      SelectedItem="{Binding TemplateCert, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      ItemsSource="{Binding TemplateCertList}" DisplayMember="NameTemplate" ValueMember="Id"/>
+                                    <dx:SimpleButton Command="{Binding RefreshTemplateCommand}" 
+                                                     VerticalAlignment="Top" Width="30" Height="30" Glyph="{dx:DXImage Office2013/Scheduling/Recurrence_32x32.png}" Margin="3"/>
+
+                                </WrapPanel>
+
+                                <WrapPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">                                    
+                                    <lc:GroupBox  Header="Фамилия на русском" Margin="3" MinWidth="240"  >
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC" 
+                                            FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.FamilyNameRus" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullEngRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Имя на русском" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                    Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.NameRus" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullEngRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Отчество" Margin="3" MinWidth="240" >
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                            Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.Patronymic" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <DataErrorValidationRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Дата рождения" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0"  materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                Height="Auto" FontSize="13pt" FontFamily="times new roman" TextChanged="TextBox_TextChanged" Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.DateOfBirth" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:DateVacRule ValidatesOnTargetUpdated="True" />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Фамилия на английском" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC" 
+                                                    FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True" CharacterCasing="{Binding SettingApp.FullNameCharacterCasing, Converter={StaticResource myUpperConverter}}"   Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.FamilyNameEng" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRusRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Имя на английском" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam" CharacterCasing="{Binding SettingApp.NameCharacterCasing, Converter={StaticResource myUpperConverter}}">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.NameEng" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRusRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Паспорт" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam" CharacterCasing="{Binding SettingApp.NumberCharacterCasing, Converter={StaticResource myUpperConverter}}">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.Passport" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <DataErrorValidationRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Личный номер" Margin="3" MinWidth="240">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                    Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam" CharacterCasing="{Binding SettingApp.NumberIdCharacterCasing, Converter={StaticResource myUpperConverter}}">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.User.IdentNumber" Mode="TwoWay" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <DataErrorValidationRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                </WrapPanel>
+
+                                <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0, 15, 0, 0">
+                                    <lc:GroupBox  Header="Дата 1 вакцинации" Margin="3" MinWidth="200">
+                                        <TextBox Name="DateVac1" Margin="-5, -5, 0, 10" Padding="0" TextChanged="TextBox_TextChanged" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.DateOfVaccination.Date" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:DateVacRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Номер партии вакцины" Margin="3" MinWidth="200">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.PartVac" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>                                    
+                                    <lc:GroupBox  Header="Наим. вакцины, страна-производитель RUS" Margin="3">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="13" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Vaccine.NameVacRus" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Наим. вакцины, страна-производитель ENG" Margin="3">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Vaccine.NameVacEng" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Вакцину назначил" Margin="3" MinWidth="200">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Doctor.Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                </WrapPanel>
+
+                                <WrapPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0, 15, 0, 0">
+                                    <lc:GroupBox  Header="Дата 2 вакцинации" Margin="3" MinWidth="200">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" TextChanged="TextBox_TextChanged" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.DateOfVaccination2.Date" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:DateVacRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Номер партии вакцины" Margin="3" MinWidth="200">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                        Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.PartVac2" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Наим. вакцины, страна-производитель RUS" Margin="3">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="13" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                            Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Vaccine2.NameVacRus" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Наим. вакцины, страна-производитель ENG" Margin="3">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                            Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Vaccine2.NameVacEng" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                    <lc:GroupBox  Header="Вакцину назначил" Margin="3" MinWidth="200">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="0" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC"
+                                                Height="Auto" FontSize="13pt" FontFamily="times new roman" AcceptsReturn="True"  Cursor="IBeam">
+                                            <TextBox.Text>
+                                                <Binding Path="Certificate.Doctor2.Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </lc:GroupBox>
+                                </WrapPanel>  
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+
+            </TabItem>
+            <TabItem Header="Страница 1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="21cm"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="21cm"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="Image/firstpage.jpg" Width="748" Height="794" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Grid Grid.Column="0" Name="print" Width="748" Height="794" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                        <StackPanel Name="Number" Margin="640, 40, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Left" 
+                                    Visibility="{Binding SettingApp.NumberCheck, Converter={StaticResource BooleanConverter}}">
+                            <TextBlock Text="{Binding Certificate.ContractNumber}" 
+                                   FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <StackPanel Name="QrCode" Margin="{Binding Certificate.FirstPage.QrCodeMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Image Width="{Binding Certificate.FirstPage.QrCodeSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Name="zxc" Source="{Binding ImageSource}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                        Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=QrCode}" Background="Transparent" Cursor="Hand">
+                                    <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=QrCode}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Up}" CommandParameter="{Binding ElementName=QrCode}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Down}" CommandParameter="{Binding ElementName=QrCode}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                        Command="{Binding UpSizeQrCode}" CommandParameter="{Binding ElementName=QrCode}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                        Command="{Binding DownSizeQrCode}" CommandParameter="{Binding ElementName=QrCode}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Name="NameOrgRus" Margin="{Binding Certificate.FirstPage.NameOrgRusMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Certificate.FirstPage.NameOrgRus}" 
+                                   FontSize="{Binding Certificate.FirstPage.NameOrgRusFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>                            
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                        Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameOrgRus}" Background="Transparent" Cursor="Hand">
+                                    <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameOrgRus}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Up}" CommandParameter="{Binding ElementName=NameOrgRus}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Down}" CommandParameter="{Binding ElementName=NameOrgRus}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                        Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameOrgRus}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                        Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameOrgRus}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Name="NameOrgEng" Margin="{Binding Certificate.FirstPage.NameOrgEngMargin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Certificate.FirstPage.NameOrgEng}" 
+                                   FontSize="{Binding Certificate.FirstPage.NameOrgEngFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="times new roman"/>
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding Visibility}" >
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="0, 0"
+                                        Command="{Binding ToTheLeft}" CommandParameter="{Binding ElementName=NameOrgEng}" Background="Transparent" Cursor="Hand">
+                                    <materialDesign:PackIcon Kind="ArrowLeftThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding ToTheRight}" CommandParameter="{Binding ElementName=NameOrgEng}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowRightThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Up}" CommandParameter="{Binding ElementName=NameOrgEng}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowUpThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0"
+                                        Command="{Binding Down}" CommandParameter="{Binding ElementName=NameOrgEng}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="ArrowDownThick" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Увеличить шрифт"
+                                        Command="{Binding UpSize}" CommandParameter="{Binding ElementName=NameOrgEng}" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeIncrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="25" Height="25" Margin="5, 0, 0, 0" ToolTip="Уменьшить шрифт"
+                                        Command="{Binding DownSize}" CommandParameter="{Binding ElementName=NameOrgEng}" Cursor="Hand" Background="Transparent">
+                                    <materialDesign:PackIcon Kind="FormatFontSizeDecrease" Width="20" Height="Auto" Margin="0"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="700*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+
+                            <dx:SimpleButton HorizontalAlignment="Left" Height="30" Command="{Binding QrCode}" Content="Создать Qr код" FontFamily="times new roman" FontSize="14pt"/>
+
+                            <WrapPanel>
+                                <lc:GroupBox  Header="Номер договора" Margin="0, 10, 5, 0" Width="120" Height="80">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                        <TextBox Margin="-5, -5, 0, 10" Padding="4" FontSize="15pt" 
+                                                 FontFamily="times new roman" Text="{Binding Certificate.ContractNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"   Cursor="IBeam" Width="85"/>
+                                        <CheckBox Margin="1, -5, 0, 10" ToolTip="Печатать номер договора" IsChecked="{Binding SettingApp.NumberCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                </lc:GroupBox>
+                                <dxe:ComboBoxEdit Height="30" Width="300" IsTextEditable="False" FontFamily="times new roman" FontSize="13pt" VerticalAlignment="Top" Margin="0, 10, 5, 0"
+                                                  SelectedItem="{Binding TemplateCert, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding TemplateCertList}" DisplayMember="NameTemplate" ValueMember="Id"/>
+                                <dx:SimpleButton Command="{Binding RefreshTemplateCommand}" 
+                                                 VerticalAlignment="Top" Width="30" Height="30" Glyph="{dx:DXImage Office2013/Scheduling/Recurrence_32x32.png}" Margin="0, 10, 5, 0"/>
+                            </WrapPanel>
+
+                            <lc:GroupBox  Header="Название на русском" Margin="0, 10, 5, 0">
+                                <TextBox Margin="-5, -5, 0, 10" Padding="0" HorizontalScrollBarVisibility="Auto" 
+                                 Height="Auto" FontSize="13pt" FontFamily="times new roman"
+                                 AcceptsReturn="True"  Cursor="IBeam" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC">
+                                    <TextBox.Text>
+                                        <Binding Path="Certificate.FirstPage.NameOrgRus" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </lc:GroupBox>
+
+                            <lc:GroupBox  Header="Название на английском" Margin="0, 10, 5, 0">
+                                <TextBox Margin="-5, -5, 0, 10" Padding="0" HorizontalScrollBarVisibility="Auto" 
+                                 Height="Auto" FontSize="13pt" FontFamily="times new roman"
+                                 AcceptsReturn="True"  Cursor="IBeam" materialDesign:ValidationAssist.FontSize="11" materialDesign:ValidationAssist.Background="#FFFFDCDC">
+                                    <TextBox.Text>
+                                        <Binding Path="Certificate.FirstPage.NameOrgEng" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                            <Binding.ValidationRules>
+                                                <local:NotNullRule ValidatesOnTargetUpdated="True"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </lc:GroupBox>
+
+                            <lc:GroupBox  Header="Дата печати сертификата" Margin="0, 10, 5, 0">
+                                <dxe:DateEdit EditValue="{Binding DatePrint, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                              FontSize="13pt" FontFamily="times new roman" Width="105" HorizontalAlignment="Left" AllowNullInput="True" />
+                            </lc:GroupBox>
+
+                            <lc:GroupBox  Header="Шаблон вывода информации в Qr код" Margin="0, 10, 5, 0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition ></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <dx:SimpleButton Command="{Binding SaveSettingAppCommand}" Margin="-5, -5, 0, 10" ToolTip="Сохранить шаблон"   Width="40" Height="30"   Glyph="{dx:DXImage Office2013/Save/SaveTo_16x16.png}" />
+                                    <TextBox Grid.Column="1" Margin="5, -5, 0, 10" Padding="0" HorizontalScrollBarVisibility="Auto" 
+                                        Height="Auto" FontSize="13pt" FontFamily="times new roman"  AcceptsReturn="True" >
+                                        <TextBox.Text>
+                                            <Binding Path="SettingApp.TemplateQrCode" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </Grid>
+                            </lc:GroupBox>
+
+                            <lc:GroupBox  Header="Переменные для настройки шаблона Qr кода" Margin="0, 10, 5, 0">
+                                <TextBlock>
+                                    {Имя} {Фамилия} {Дата рождения} {Номер паспорта} 
+                                    <LineBreak />
+                                    {Дата 1 вакцинации} {Наименование 1 вакцины} {Номер партии 1 вакцины}
+                                    <LineBreak />
+                                    {Дата 2 вакцинации} {Наименование 2 вакцины} {Номер партии 2 вакцины} {Дата печати сертификата}
+                                </TextBlock>
+                            </lc:GroupBox>
+
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Список сертификатов">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <dx:SimpleButton Command="{Binding LoadClientCommand}" CommandParameter="{Binding ElementName=DateGrid, Path=SelectedItem}" Width="120" Height="30" Content="Загрузить"  Glyph="{dx:DXImage Office2013/Actions/LoadFrom_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding DeleteCertificateCommand}" CommandParameter="{Binding ElementName=DateGrid}"  Width="120" Height="30" Content="Удалить"  Glyph="{dx:DXImage Office2013/Actions/DeleteList2_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding CopyFioCommand}" CommandParameter="{Binding ElementName=DateGrid, Path=SelectedItem}" Width="150" Height="30" Content="Копировать ФИО"  Glyph="{dx:DXImage Office2013/Edit/Copy_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding PrintStCommand}"  Width="150" Height="30" Content="Печать ведомости" ToolTip="Печатать ведомость выдачи сертификатов"  Glyph="{dx:DXImage Office2013/Reports/Report_32x32.png}" Margin="0, 3"/>
+
+                        <materialDesign:PopupBox StaysOpen="True" HorizontalAlignment="Right">
+                            <Grid Width="300" Margin="8,8,8,8">
+                                <Grid.Resources>
+                                    <Style TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                                        <Setter Property="Margin" Value="8,8,10,8" />
+                                    </Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                                        <Setter Property="materialDesign:HintAssist.IsFloating" Value="True" />
+                                        <Setter Property="Margin" Value="8,8,8,8" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <dx:SimpleButton Grid.Row="0" Command="{Binding ExportCertificateCommand}" Height="30" Content="Экспорт данных"  Glyph="{dx:DXImage Office2013/Export/ExportToCSV_16x16.png}" Margin="0, 3"/>
+                                <dx:SimpleButton Grid.Row="1" Command="{Binding ImportCertificateCommand}"  Height="30" Content="Импорт данных"  Glyph="{dx:DXImage Office2013/Export/ExportToCSV_16x16.png}" Margin="0, 3"/>
+                            </Grid>
+                        </materialDesign:PopupBox>
+
+                    </StackPanel>    
+                    <dxg:GridControl Grid.Row="1" EnableSmartColumnsGeneration="True" ItemsSource="{Binding ListCertificate}" SelectionMode="Row" 
+                                     Name="DateGrid" FontFamily="times new roman" FontSize="15">
+                        <dxg:GridControl.GroupSummary>
+                            <dxg:GridSummaryItem SummaryType="Count"/>
+                        </dxg:GridControl.GroupSummary>
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem SummaryType="Count" FieldName="Номер договора" CalculationMode="AllRows" />
+                        </dxg:GridControl.TotalSummary>
+                        
+                        <dxg:GridControl.View >
+                            <dxg:TableView ShowTotalSummary="True" SummaryCalculationMode="AllRows"  EditFormShowMode="Inline" RowUpdatedCommand="{Binding RowUpdatedDateCommand}">                                 
+                                <dxg:TableView.GroupSummaryItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0, 0, 15, 0">
+                                            <TextBlock Text="Всего пунктов: "/>
+                                            <TextBlock Text="{Binding Value}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dxg:TableView.GroupSummaryItemTemplate>
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+
+                        <dxg:GridColumn FieldName="Номер договора" Binding="{Binding Path=ContractNumber, Mode=TwoWay}" AllowEditing="True"  IsSmart="True" SortOrder="Descending"  Width="Auto">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Дата анкеты" Binding="{Binding Path=Date, Mode=TwoWay}" IsSmart="True" AllowEditing="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Дата сертификата" Binding="{Binding Path=DateRecord, Mode=TwoWay}" AllowEditing="True" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Фамилия" Binding="{Binding Path=User.FamilyNameRus, Mode=TwoWay}" IsSmart="True" AllowEditing="False" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Имя" Binding="{Binding Path=User.NameRus, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Отчество" Binding="{Binding Path=User.Patronymic, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Дата рождения" Binding="{Binding Path=User.DateOfBirth, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Паспорт" Binding="{Binding Path=User.Passport, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Личный номер" Binding="{Binding Path=User.IdentNumber, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="1 вакцинация" Binding="{Binding Path=DateOfVaccination.Date, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Партия 1" Binding="{Binding Path=PartVac, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="2 вакцинации" Binding="{Binding Path=DateOfVaccination2.Date, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Партия 2" Binding="{Binding Path=PartVac2, Mode=TwoWay}" IsSmart="True" Width="Auto"/>
+                        <dxg:GridColumn FieldName="Название вакцины" Binding="{Binding Path=Vaccine.NameVacRus}" IsSmart="True" Width="Auto"/>
+                    </dxg:GridControl>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Статистика">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <dx:SimpleButton Command="{Binding StatisticCommand}"  Width="170" Height="30" Content="Обновить статистику"  Glyph="{dx:DXImage Office2013/Scheduling/Recurrence_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding DeleteRecordsCommand}" CommandParameter="{Binding ElementName=ListRecords, Path=SelectedItem}" Width="120" Height="30" Content="Удалить"  Glyph="{dx:DXImage Office2013/Actions/DeleteList2_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding ExportCertificateExcelCommand}" CommandParameter="{Binding ElementName=Reports}" Width="130" Height="30" Content="Экспорт в Excel"  Glyph="{dx:DXImage Office2013/Export/ExportToCSV_16x16.png}" Margin="0, 3"/>
+
+                    </StackPanel>
+
+                    <dxg:GridControl Grid.Row="1" EnableSmartColumnsGeneration="True" ItemsSource="{Binding Reports, Mode=TwoWay}" ShowBorder="False"  Width="700" HorizontalAlignment="Left"
+                                    FontFamily="times new roman" Name="Reports">
+                        <dxg:GridControl.View>
+                            <dxg:TableView AllowEditing="False" ShowGroupPanel="False" ShowTotalSummary="True"/>
+                        </dxg:GridControl.View>
+                        <dxg:GridColumn FieldName="Дата" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=DateTime}" IsSmart="True" SortOrder="Ascending">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:DateEditSettings MaskType="DateTime" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Получено" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Incoming}" IsSmart="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Продано" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Sale}" IsSmart="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Испорчено" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Spoiled}" IsSmart="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Остаток" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Total}" IsSmart="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem SummaryType="Sum" FieldName="Получено" CalculationMode="AllRows" />
+                            <dxg:GridSummaryItem SummaryType="Sum" FieldName="Продано" CalculationMode="AllRows" />
+                            <dxg:GridSummaryItem SummaryType="Sum" FieldName="Испорчено" CalculationMode="AllRows" />
+                        </dxg:GridControl.TotalSummary>
+                    </dxg:GridControl>
+
+                    <dxg:GridControl Grid.Row="1" Grid.Column="1" EnableSmartColumnsGeneration="True" ItemsSource="{Binding Records, Mode=TwoWay}" Name="ListRecords"
+                                     ShowBorder="False"  Width="400" Margin="10, 0, 0, 0" HorizontalAlignment="Left" FontFamily="times new roman" >
+                        <dxg:GridControl.View>
+                            <dxg:TableView EditFormShowMode="Dialog"  RowUpdatedCommand="{Binding RowUpdatedDateCommand}"
+                                NewItemRowPosition="Bottom" AllowEditing="True" ShowGroupPanel="False" ShowTotalSummary="True"/>
+                        </dxg:GridControl.View>
+                        <dxg:GridColumn FieldName="Дата" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Date, Mode=TwoWay}" IsSmart="True" SortOrder="Ascending">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:DateEditSettings MaskType="DateTime" MinValue="01.01.2021" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="Получено" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Incoming, Mode=TwoWay}" IsSmart="True" AllowEditing="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>                        
+                        <dxg:GridColumn FieldName="Испорчено" HorizontalHeaderContentAlignment="Center" Binding="{Binding Path=Spoiled, Mode=TwoWay}" IsSmart="True">
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:TextEditSettings MaskType="Numeric" Mask="d" HorizontalContentAlignment="Center" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridControl.TotalSummary>
+                            <dxg:GridSummaryItem SummaryType="Sum" FieldName="Получено" CalculationMode="AllRows" />
+                            <dxg:GridSummaryItem SummaryType="Sum" FieldName="Испорчено" CalculationMode="AllRows" />
+                        </dxg:GridControl.TotalSummary>
+                    </dxg:GridControl>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Шаблоны">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <dx:SimpleButton Command="{Binding DeleteTemplateCommand}" CommandParameter="{Binding ElementName=ListTemplate, Path=SelectedItem}" Width="120" Height="30" Content="Удалить"  Glyph="{dx:DXImage Office2013/Actions/DeleteList2_32x32.png}" Margin="0, 3"/>
+                    </StackPanel>
+
+                    <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding TemplateCertList, Mode=TwoWay}" FontFamily="times new roman" HorizontalGridLinesBrush="DarkGray" FontSize="18"
+                         Name="ListTemplate" CanUserAddRows="False" CanUserDeleteRows="False" Grid.Row="1"  IsReadOnly="True" RowBackground="#FFDAEEFF" AlternatingRowBackground="#FFE8F4FF" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название шаблон" Binding="{Binding Path=NameTemplate}" />
+                            <DataGridTextColumn Header="Название вакцины"  Binding="{Binding Path=Vaccine.NameVacRus}" />
+                            <DataGridTextColumn Header="ФИО врача" Binding="{Binding Path=Doctor.Name}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</dx:ThemedWindow>
