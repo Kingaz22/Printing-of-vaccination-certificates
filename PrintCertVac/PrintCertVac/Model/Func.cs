@@ -351,7 +351,12 @@ namespace PrintCertVac.Model
                     NumberCharacterCasing = false,
                     NumberIdCharacterCasing = false,
                     NumberCheck = false,
-                    TemplateQrCode = ""
+                    TemplateQrCode = "Учреждение;\r\n" +
+                                     "Statement;\r\n" +
+                                     "{Фамилия} {Имя} {Дата рождения} {Номер паспорта};\r\n" +
+                                     "1-{Дата 1 вакцинации} {Наименование 1 вакцины} {Номер партии 1 вакцины};\r\n" +
+                                     "2-{Дата 2 вакцинации} {Наименование 2 вакцины} {Номер партии 2 вакцины};\r\n" +
+                                     "{Дата печати сертификата}"
                 });
             }
 
