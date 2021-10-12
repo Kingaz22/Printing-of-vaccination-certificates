@@ -16,7 +16,7 @@ namespace PrintCertVac
             string charString = value as string;
 
             if (string.IsNullOrWhiteSpace(charString))
-                return new ValidationResult(false, $"Строка не должна быть пустой");
+                return new ValidationResult(true, $"Строка не должна быть пустой");
 
             return new ValidationResult(true, null);
         }
@@ -46,7 +46,7 @@ namespace PrintCertVac
             string charString = value as string;
 
             if (string.IsNullOrWhiteSpace(charString))
-                return new ValidationResult(false, $"Строка не должна быть пустой");
+                return new ValidationResult(true, $"Строка не должна быть пустой");
 
             string pattern = @"[а-яА-Я\d]";
             if (Regex.IsMatch(charString, pattern))
@@ -63,7 +63,7 @@ namespace PrintCertVac
             string charString = value as string;
 
             if (string.IsNullOrWhiteSpace(charString))
-                return new ValidationResult(false, $"Строка не должна быть пустой");
+                return new ValidationResult(true, $"Строка не должна быть пустой");
 
             if (charString.Length > 10 && !DateTime.TryParse(charString, out _))
                 return new ValidationResult(false, $"Не верный формат даты");

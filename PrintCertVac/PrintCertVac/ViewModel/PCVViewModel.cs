@@ -95,8 +95,8 @@ namespace PrintCertVac.ViewModel
         {
             get
             {
-                NameVacRusEngPart = $"{_certificate.Vaccine.NameVacRus}, {_certificate.PartVac}\n{_certificate.Vaccine.NameVacEng}, {_certificate.PartVac}";
-                NameVacRusEngPart2 = $"{_certificate.Vaccine2.NameVacRus}, {_certificate.PartVac2}\n{_certificate.Vaccine2.NameVacEng}, {_certificate.PartVac2}";
+                NameVacRusEngPart = $"{_certificate.Vaccine.NameVacRus}{_certificate.PartVac}{_certificate.Vaccine.NameVacEng}{_certificate.PartVac}";
+                NameVacRusEngPart2 = $"{_certificate.Vaccine2.NameVacRus}{_certificate.PartVac2}{_certificate.Vaccine2.NameVacEng}{_certificate.PartVac2}";
                 FamilyName = $"{_certificate.User.FamilyNameRus} / {_certificate.User.FamilyNameEng}";
                 NameFull = $"{_certificate.User.NameRus} / {_certificate.User.NameEng}";
                 return _certificate;
