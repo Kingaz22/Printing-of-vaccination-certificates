@@ -29,14 +29,14 @@
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
             <TextBlock Text="Andrei Zubronov" TextWrapping="Wrap"
                        FontSize="18" FontFamily="Times New Roman" Margin="5" />
-            <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Страница в LinkedIn" VerticalAlignment="Top" Height="30" Width="30">
+            <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Страница в LinkedIn" VerticalAlignment="Top" Height="30" Width="30" Click="Button_Click">
                 <materialDesign:PackIcon Width="25" Height="25"
                     Kind="Linkedin" />
             </Button>
         </StackPanel>
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Версия:" TextWrapping="Wrap" HorizontalAlignment="Center" FontWeight="DemiBold"
                    FontSize="18" FontFamily="Times New Roman" Margin="5" />
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="2.1.3" TextWrapping="Wrap"
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="2.1.3" TextWrapping="Wrap" Name="TextBlock"
                    FontSize="18" FontFamily="Times New Roman" Margin="5" />
 
         <Button Grid.Row="3" Grid.Column="0" Content="Закрыть" IsCancel="True"/>

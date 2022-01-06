@@ -60,7 +60,7 @@ namespace PrintCertVac.Model
 
             for (int i = 0; i < a.Count; i++)
             {
-                if (a[i].IndexOf("Вакцинация 1") != -1)
+                if (a[i].IndexOf("Вакцинация 1") != -1 || a[i].IndexOf("Ревакцинация") != -1)
                 {
                     str1 = a[i - 1];
                     str2 = a[i + 3];
@@ -104,10 +104,15 @@ namespace PrintCertVac.Model
                 }
             }
 
-            if (!string.IsNullOrEmpty(certificate.DateOfVaccination.Date) && !string.IsNullOrEmpty(certificate.DateOfVaccination2.Date) && DateTime.Parse(certificate.DateOfVaccination.Date) >= DateTime.Parse(certificate.DateOfVaccination2.Date))
+            if (DateTime.TryParse(certificate.DateOfVaccination.Date, out _) && DateTime.TryParse(certificate.DateOfVaccination2.Date, out _))
             {
-                errors = $"{errors}Дата первой вакцинации больше или равна второй\n";
+                if (!string.IsNullOrEmpty(certificate.DateOfVaccination.Date) && !string.IsNullOrEmpty(certificate.DateOfVaccination2.Date) && DateTime.Parse(certificate.DateOfVaccination.Date) >= DateTime.Parse(certificate.DateOfVaccination2.Date))
+                {
+                    errors = $"{errors}Дата первой вакцинации больше или равна второй\n";
+                }
             }
+
+            
 
             return errors;
         }
@@ -217,8 +222,10 @@ namespace PrintCertVac.Model
 
         public static IEnumerable<Certificate> ImportCertificate()
         {
-            OpenFileDialog openFileDialog = new();
-            openFileDialog.Filter = "Json file (*.json)|*.json|All files |*.*";
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "Json file (*.json)|*.json|All files |*.*"
+            };
             if (openFileDialog.ShowDialog() == true)
             {
                 var fileName = openFileDialog.FileName;

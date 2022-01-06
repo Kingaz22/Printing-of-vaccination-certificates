@@ -32,6 +32,8 @@ namespace PrintCertVac.ViewModel
             }
         }
 
+       
+
         private IEnumerable<Certificate> _listCertificate;
         public IEnumerable<Certificate> ListCertificate
         {
@@ -385,6 +387,15 @@ namespace PrintCertVac.ViewModel
         }
 
         [Command]
+        public void CopyClient(Certificate args)
+        {
+            Certificate = new(TemplateCert);
+            Certificate.User = args.User;
+            RefreshTemplate();
+            SelectedIndex = "0";
+        }
+
+        [Command]
         public void DeleteTemplate(TemplateCert args)
         {
             if (args is not null)
@@ -480,6 +491,7 @@ namespace PrintCertVac.ViewModel
                 printDialog.PrintVisual(args, "invoice");
             }
         }
+        
 
         private RelayCommand _qrCode;
         public RelayCommand QrCode => _qrCode ??= new RelayCommand((o) => ImageSource = QrCodeGenerator.RunQrCode(Certificate, SettingApp.TemplateQrCode, DatePrint));

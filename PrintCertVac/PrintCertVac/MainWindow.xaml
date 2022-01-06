@@ -939,6 +939,7 @@
                         <dx:SimpleButton Command="{Binding DeleteCertificateCommand}" CommandParameter="{Binding ElementName=DateGrid}"  Width="120" Height="30" Content="Удалить"  Glyph="{dx:DXImage Office2013/Actions/DeleteList2_32x32.png}" Margin="0, 3"/>
                         <dx:SimpleButton Command="{Binding CopyFioCommand}" CommandParameter="{Binding ElementName=DateGrid, Path=SelectedItem}" Width="150" Height="30" Content="Копировать ФИО"  Glyph="{dx:DXImage Office2013/Edit/Copy_32x32.png}" Margin="0, 3"/>
                         <dx:SimpleButton Command="{Binding PrintStCommand}"  Width="150" Height="30" Content="Печать ведомости" ToolTip="Печатать ведомость выдачи сертификатов"  Glyph="{dx:DXImage Office2013/Reports/Report_32x32.png}" Margin="0, 3"/>
+                        <dx:SimpleButton Command="{Binding CopyClientCommand}" CommandParameter="{Binding ElementName=DateGrid, Path=SelectedItem}" Width="120" Height="30" Content="Копировать"  Glyph="{dx:DXImage Office2013/Edit/Copy_32x32.png}" Margin="0, 3"/>
 
                         <materialDesign:PopupBox StaysOpen="True" HorizontalAlignment="Right">
                             <Grid Width="300" Margin="8,8,8,8">
@@ -971,7 +972,8 @@
                         </dxg:GridControl.TotalSummary>
                         
                         <dxg:GridControl.View >
-                            <dxg:TableView ShowTotalSummary="True" SummaryCalculationMode="AllRows"  EditFormShowMode="Inline" RowUpdatedCommand="{Binding RowUpdatedDateCommand}">                                 
+                            <dxg:TableView ShowTotalSummary="True" SummaryCalculationMode="AllRows"
+                                           EditFormShowMode="Inline" RowUpdatedCommand="{Binding RowUpdatedDateCommand}">                                 
                                 <dxg:TableView.GroupSummaryItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="0, 0, 15, 0">
